@@ -1,0 +1,5 @@
+# All PRs must be approved by the following
+* @grandaleplace
+
+# Explicitly protect ownership configuration
+/.github/ @YourGitHubUsername
