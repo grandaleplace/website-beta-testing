@@ -1,0 +1,43 @@
+name: Publish selected beta site
+on:
+  workflow_dispatch:
+    inputs:
+      source:
+        description: "Choose main for the fallback or dev for active testing"
+        required: true
+        type: choice
+        options:
+          - main
+          - dev
+permissions:
+  contents: read
+concurrency:
+  group: beta-pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out selected site
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.source }}
+          persist-credentials: false
+      - name: Validate publish directory
+        run: |
+          test -f site/index.html
+          test ! -e site/CNAME
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+      - name: Publish
+        id: deployment
+        uses: actions/deploy-pages@v5
