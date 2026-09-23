@@ -4,7 +4,7 @@
     {
       "label": "Preview site",
       "type": "shell",
-      "command": "python3.14 -m http.server 8081 --bind 127.0.0.1 --directory site",
+      "command": "python3.14 -m http.server 8082 --bind 127.0.0.1 --directory site",
       "problemMatcher": []
     }
   ]

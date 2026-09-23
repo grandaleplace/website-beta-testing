@@ -22,7 +22,7 @@ With a clean `dev` checkout here, run from `hoa` using Node.js 26:
 npm run export:beta -- ../beta-hoa
 ```
 
-This builds fresh beta output for `/website-beta-testing`, removes the production CNAME,
+This builds fresh beta output for the root of any hostname, removes the production CNAME,
 adds noindex directives, and replaces only `site/`. Review, commit and push `dev` separately.
 No export command pushes, changes Pages settings, or deploys.
 
@@ -35,22 +35,29 @@ in its **source** input. This is manual-only: pushing either branch does not pub
 The environment must permit workflow runs from `main`. The last successful publication
 remains live until another succeeds. Choose `main` again to close testing.
 
-Expected URL: https://grandaleplace.github.io/website-beta-testing/ . No custom domain or DNS
-change is included. See [GitHub's custom Pages workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
+The webmaster manages the beta DNS hostname. Exports use domain-independent root paths and
+omit hostname-specific canonical metadata by default, so changing the hostname requires no
+rebuild. Do not add a `/website-beta-testing` prefix when serving at a custom-domain root.
+Only subfolder hosting needs `BETA_BASE_PATH`; see `hoa/docs/beta.md`. The export does not
+change DNS or Pages settings. See [GitHub's custom Pages workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
 
 Beta pages are publicly reachable unless separate hosting access restrictions are configured.
 Invitations and the acknowledgment notice do not enforce access control. Never publish resident
 or confidential data. The disclaimer is proposed editorial wording, not a guarantee of legal
 protection; have HOA counsel approve it before relying on it for that purpose.
 
-## Local fallback preview
+## Local previews
 
-Use Python 3.14 (or the VS Code **Preview site** task):
+From the sibling `hoa` source repository, run `make preview-beta` and open
+http://localhost:8081 . It builds the current source with the beta banners and acknowledgment
+screen. Stop it with `make down-beta`. The normal `make preview` uses port 8080.
+
+To preview this repository's exported files or fallback directly, use Python 3.14
+(or the VS Code **Preview site** task):
 
 ```sh
-python3.14 -m http.server 8081 --bind 127.0.0.1 --directory site
+python3.14 -m http.server 8082 --bind 127.0.0.1 --directory site
 ```
 
-Open http://127.0.0.1:8081 . Active exports contain project-prefixed URLs; preview those with
-the beta browser test server in `hoa` or serve this directory under `/website-beta-testing/`.
+Open http://127.0.0.1:8082 . Root-path exports work here without rewriting any links.
 No Node dependencies or build step are required in this publishing repository.
